@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=0">
+
+</head>
+
+<html>
+
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        img {
+            position: absolute;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            position: fixed;
+            left: 0;
+            top: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: url("./bg.jpg") no-repeat;
+            background-size: 100% 100%;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            -webkit-filter: blur(7px);
+            -moz-filter: blur(7px);
+            -ms-filter: blur(7px);
+            -o-filter: blur(7px);
+            filter: blur(7px);
+        }
+
+        .box2 {
+            position: fixed;
+            left: 0;
+            top: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: url("./bg.jpg") no-repeat;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        img {
+            width: .7rem;
+        }
+
+        .img_area {
+            display: none;
+            left: 0;
+            top: 0;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .one {
+            transform: rotate(90deg);
+        }
+
+        .three {
+            transform: rotate(-90deg);
+        }
+    </style>
+    <div class="box">
+
+    </div>
+    <div class="box2">
+
+    </div>
+    <img class="move one" src="./shuimu03.gif" alt="">
+    <img class="move two" src="./shuimu03.gif" alt="">
+    <img class="move three" src="./shuimu03.gif" alt="">
+
+    <img draggable="true" class="img_area" src="./shuimu03.gif" alt="">
+
+    <script>
+        !(function (win, doc) {
+            function setFontSize() {
+                // 获取window 宽度
+                // zepto实现 $(window).width()就是这么干的
+                var winWidth = window.innerWidth;
+                // doc.documentElement.style.fontSize = (winWidth / 640) * 100 + 'px' ;
+
+                // 640宽度以上进行限制 需要css进行配合
+                var size = (winWidth / 640) * 100;
+                doc.documentElement.style.fontSize = (size < 100 ? size : 100) + 'px';
+            }
+
+            var evt = 'onorientationchange' in win ? 'orientationchange' : 'resize';
+
+            var timer = null;
+
+            win.addEventListener(evt, function () {
+                clearTimeout(timer);
+
+                timer = setTimeout(setFontSize, 300);
+            }, false);
+
+            win.addEventListener("pageshow", function (e) {
+                if (e.persisted) {
+                    clearTimeout(timer);
+
+                    timer = setTimeout(setFontSize, 300);
+                }
+            }, false);
+            // 初始化
+            setFontSize();
+
+        }(window, document));
+    </script>
+    <script>
+        let arr = [{}, {}, {}]
+        window.onload = function () {
+            const move_width = document.querySelector(".move").offsetWidth
+            const move_height = document.querySelector(".move").clientHeight
+            var a = document.querySelectorAll('.move');
+            const box2 = document.querySelector(".box2")
+
+            function float(obj, i) {
+                var x = parseInt((obj.style.left || "").replace(/[^\d]/g, "")) || 100,
+                    y = parseInt((obj.style.top || "").replace(/[^\d]/g, "")) || 100; //浮动层的初始位置，分别对应层的初始X坐标和Y坐标   
+                var xin = true,
+                    yin = true //判断层的X坐标和Y坐标是否在在控制范围之内，xin为真是层向右移动，否则向左；yin为真是层向下移动，否则向上   
+                var step = 1 //层移动的步长，值越大移动速度越快   
+                var delay = 10 //层移动的时间间隔,单位为毫秒，值越小移动速度越快
+                function floatAD() {
+                    var L = 10
+                    var T = 10 //层移动范围的左边界(L)和上边界(T)坐标   
+                    var R = document.body.clientWidth - obj.offsetWidth - 10 //层移动的右边界   
+                    var B = document.body.clientHeight - obj.offsetHeight //层移动的下边界   
+                    obj.style.left = (x + document.body.scrollLeft) +
+                        "px" //更新层的X坐标，实现X轴方向上的运动；document.body.scrollLeft为文档区域的滚动条向右拉的距离，以保证在滚动条右拉时层仍在可见范围内   
+                    obj.style.top = (y + document.body.scrollTop) +
+                        "px" //更新层的Y坐标，实现Y轴方向上的运动；document.body.scrollTop为文档区域的滚动条向下拉的距离，以保证在滚动条下拉时层仍在可见范围内   
+                    x = x + step * (xin ? 1 : -1) //通过判断层的范围决定层在X轴上的运动方向   
+                    if (x < L) {
+                        xin = true;
+                        x = L
+                    } //层超出左边界时的处理   
+                    if (x > R) {
+                        xin = false;
+                        x = R
+                    } //层超出右边界时的处理   
+                    y = y + step * (yin ? 1 : -1) //通过判断层的范围决定层在Y轴上的运动方向   
+                    if (y < T) {
+                        yin = true;
+                        y = T
+                    } //层超出上边界时的处理   
+                    if (y > B) {
+                        yin = false;
+                        y = B
+                    } //层超出下边界时的处理  
+                }
+
+                var itl = setInterval(floatAD, delay) //每delay秒执行一次floatAD函数   
+                // obj.onmouseover = function () {
+                //     clearInterval(itl)
+                // } //层在鼠标移上时清除上面的间隔事件，实现层在的鼠标移上时停止运动的效果  
+
+                // obj.ontouchstart = function () {
+                //     clearInterval(itl)
+                // } //层在鼠标移上时清除上面的间隔事件，实现层在的鼠标移上时停止运动的效果  
+
+                // obj.ontouchmove = function () {
+                //     clearInterval(itl)
+                // } //层在鼠标移上时清除上面的间隔事件，实现层在的鼠标移上时停止运动的效果  
+                arr[i].itl = itl;
+                arr[i].interval = () => {
+                    arr[i].itl =setInterval(floatAD, delay)
+                }
+                obj.onmouseout = function () {
+                    itl = setInterval(floatAD, delay)
+                } //层在鼠标移开时开始间隔事件，实现层在的鼠标移开时继续运动的效果 
+            }
+            for (var i = 0; i < a.length; i++) {
+                a[i].style.left = parseInt(Math.random() * 1000 * (i + 1)) + "px";
+                a[i].style.top = parseInt(Math.random() * 1000 * (i + 1)) + "px";
+                float(a[i], i)
+            }
+
+
+            var img_area = document.querySelector(".img_area");
+            // 记录初始偏移量
+            var clientX, clientY;
+            window.ontouchstart = function (event) {
+
+                if (box2.style.opacity == "1") {
+                    return
+                }
+                box2.style.transition = ` opacity 2s`;
+
+                img_area.style.display = "block";
+
+                // 记录刚拖动时，鼠标在源对象上的偏移量
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+                img_area.style.left = clientX + "px";
+                img_area.style.top = clientY + "px";
+                // console.log(offsetX);
+            }
+            window.ontouchmove = function (event) {
+                if (box2.style.opacity == "1") {
+                    return
+                }
+                // 记录拖动时，鼠标指针距离文档左侧及顶部的距离
+                var x = event.touches[0].clientX;
+                var y = event.touches[0].clientY;
+                // 针对最后一刻x,y都为0的情景，不作处理
+                // if (x==0 && y==0){
+                //     return false;
+                // }
+                // // 动态计算位置：
+                // x -= clientX;
+                // y -= clientY;
+                // 计算结果赋值
+                img_area.style.left = x + "px";
+                img_area.style.top = y + "px";
+
+                for (let i = 0; i < a.length; i++) {
+
+                    const l = a[i].offsetLeft;
+                    const t = a[i].offsetTop;
+                    // move_width  //move_height
+
+                    if (x > l + 10 && x < l + move_width - 10 && y > t + 10 && y < t + move_height - 10) {
+                        // alert(1)
+                        clearInterval(arr[i].itl)
+                        a[i].style.display = "none";
+                        img_area.style.display = "none";
+                        box2.style.clipPath = `circle(80px at ${x}px ${y}px)`;
+                        box2.style.opacity = 1;
+                        setTimeout(() => {
+                            box2.style.transition = ` opacity 0`;
+                            box2.style.opacity = 0;
+                            a[i].style.display = "block";
+                            arr[i].interval()
+                        }, 3000);
+                    }
+
+                }
+            }
+            window.ontouchend = function (event) {
+                img_area.style.display = "none";
+            }
+            //  img_area.ondragleave = function () {
+            //     ondragleave 应用于拖拽元素，拖拽过程中，当鼠标离开拖拽元素范围时调用
+            //     console.log("鼠标离开拖拽元素范围");
+            // }
+            img_area.ondragover = function (event) {
+                event.preventDefault();
+            }
+
+        }
+    </script>
+</body>
+
+</html>
