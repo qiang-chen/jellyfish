@@ -92,6 +92,7 @@
 
     <img draggable="true" class="img_area" src="./shuimu03.gif" alt="">
 
+    <!-- 1715584439 -->
     <script>
         !(function (win, doc) {
             function setFontSize() {
@@ -187,9 +188,9 @@
                 arr[i].interval = () => {
                     arr[i].itl =setInterval(floatAD, delay)
                 }
-                obj.onmouseout = function () {
-                    itl = setInterval(floatAD, delay)
-                } //层在鼠标移开时开始间隔事件，实现层在的鼠标移开时继续运动的效果 
+                // obj.onmouseout = function () {
+                //     itl = setInterval(floatAD, delay)
+                // } //层在鼠标移开时开始间隔事件，实现层在的鼠标移开时继续运动的效果 
             }
             for (var i = 0; i < a.length; i++) {
                 a[i].style.left = parseInt(Math.random() * 1000 * (i + 1)) + "px";
