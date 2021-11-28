@@ -45,7 +45,7 @@
             filter: blur(4px);
         }
 
-        .box1{
+        .box1 {
             position: fixed;
             left: 0;
             top: 0;
@@ -94,7 +94,8 @@
             /* transform: rotate(-90deg); */
             width: .8rem;
         }
-        .box3{
+
+        .box3 {
             width: 160px;
             height: 160px;
             border-radius: 50%;
@@ -104,9 +105,10 @@
             top: 50%;
             transition: opacity 2s;
             box-shadow: 0px 0px 14px #fff;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
         }
-        .box3 img{
+
+        .box3 img {
             position: absolute;
             left: 50%;
             top: 160px;
@@ -170,13 +172,35 @@
         }(window, document));
     </script>
     <script>
+        function getrandom(min, max) {
+            //Math.random() 0-1之间的随机小数不包括1
+            return Math.floor(Math.random() * (max - min) + min)
+        }
+
+        function position(xin,yin,obj) {
+            if (xin && yin) {
+                obj.style.transform = `rotate(${getrandom(130,150)}deg)`;
+            }
+
+            if (xin && !yin) {
+                obj.style.transform = `rotate(${getrandom(30,50)}deg)`;
+            }
+
+            if (!xin && yin) {
+                obj.style.transform = `rotate(-${getrandom(130,150)}deg)`;
+            }
+
+            if (!xin && !yin) {
+                obj.style.transform = `rotate(-${getrandom(30,50)}deg)`;
+            }
+        }
         let arr = [{}, {}, {}]
         window.onload = function () {
             const move_width = document.querySelector(".move").offsetWidth
             const move_height = document.querySelector(".move").clientHeight
             var a = document.querySelectorAll('.move');
             const box2 = document.querySelector(".box2")
-            const box3=document.querySelector(".box3")
+            const box3 = document.querySelector(".box3")
 
             function float(obj, i) {
                 var x = parseInt((obj.style.left || "").replace(/[^\d]/g, "")) || 100,
@@ -187,17 +211,7 @@
                 var delay = 10 //层移动的时间间隔,单位为毫秒，值越小移动速度越快
                 function floatAD() {
                     // console.log(xin,yin,"xin,yin")
-                    if(xin){
-                        obj.style.transform="rotate(90deg)";
-                    }else{
-                        obj.style.transform="rotate(-90deg)";
-                    }
 
-                    if(yin){
-                        obj.style.transform="rotate(180deg)";
-                    }else{
-                        obj.style.transform="rotate(0deg)";
-                    }
 
                     var L = 10
                     var T = 10 //层移动范围的左边界(L)和上边界(T)坐标   
@@ -210,19 +224,26 @@
                     x = x + step * (xin ? 1 : -1) //通过判断层的范围决定层在X轴上的运动方向   
                     if (x < L) {
                         xin = true;
+                        position(xin,yin,obj)
                         x = L
                     } //层超出左边界时的处理   
                     if (x > R) {
                         xin = false;
+                        position(xin,yin,obj)
+
                         x = R
                     } //层超出右边界时的处理   
                     y = y + step * (yin ? 1 : -1) //通过判断层的范围决定层在Y轴上的运动方向   
                     if (y < T) {
                         yin = true;
+                        position(xin,yin,obj)
+
                         y = T
                     } //层超出上边界时的处理   
                     if (y > B) {
                         yin = false;
+                        position(xin,yin,obj)
+
                         y = B
                     } //层超出下边界时的处理  
                 }
@@ -241,15 +262,15 @@
                 // } //层在鼠标移上时清除上面的间隔事件，实现层在的鼠标移上时停止运动的效果  
                 arr[i].itl = itl;
                 arr[i].interval = () => {
-                    arr[i].itl =setInterval(floatAD, delay)
+                    arr[i].itl = setInterval(floatAD, delay)
                 }
                 // obj.onmouseout = function () {
                 //     itl = setInterval(floatAD, delay)
                 // } //层在鼠标移开时开始间隔事件，实现层在的鼠标移开时继续运动的效果 
             }
             for (var i = 0; i < a.length; i++) {
-                a[i].style.left = parseInt(Math.random() * 1000 * (i + 1)*Math.random()) + "px";
-                a[i].style.top = parseInt(Math.random() * 1000 * (i + 1)*Math.random()) + "px";
+                a[i].style.left = parseInt(Math.random() * 1000 * (i + 1) * Math.random()) + "px";
+                a[i].style.top = parseInt(Math.random() * 1000 * (i + 1) * Math.random()) + "px";
                 float(a[i], i)
             }
 
@@ -300,15 +321,15 @@
                     if (x > l + 10 && x < l + move_width - 10 && y > t + 10 && y < t + move_height - 10) {
                         // alert(1)
                         clearInterval(arr[i].itl)
-                        const w=document.body.clientWidth/6;
-                        console.log(w,x)
-                        const srcIndex=Math.ceil(x/w);
-                        box3.innerHTML=`<img src="./${srcIndex}.png"/>`
+                        const w = document.body.clientWidth / 6;
+                        console.log(w, x)
+                        const srcIndex = Math.ceil(x / w);
+                        box3.innerHTML = `<img src="./${srcIndex}.png"/>`
                         a[i].style.display = "none";
                         img_area.style.display = "none";
                         box2.style.clipPath = `circle(80px at ${x}px ${y}px)`;
-                        box3.style.left = x+"px";
-                        box3.style.top = y+"px";
+                        box3.style.left = x + "px";
+                        box3.style.top = y + "px";
                         box2.style.opacity = 1;
                         box3.style.opacity = 1;
                         setTimeout(() => {
