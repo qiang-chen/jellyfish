@@ -86,12 +86,12 @@
         }
 
         .one {
-            transform: rotate(90deg);
+            /* transform: rotate(90deg); */
             width: .5rem;
         }
 
         .three {
-            transform: rotate(-90deg);
+            /* transform: rotate(-90deg); */
             width: .8rem;
         }
         .box3{
@@ -186,6 +186,19 @@
                 var step = 1 //层移动的步长，值越大移动速度越快   
                 var delay = 10 //层移动的时间间隔,单位为毫秒，值越小移动速度越快
                 function floatAD() {
+                    // console.log(xin,yin,"xin,yin")
+                    if(xin){
+                        obj.style.transform="rotate(90deg)";
+                    }else{
+                        obj.style.transform="rotate(-90deg)";
+                    }
+
+                    if(yin){
+                        obj.style.transform="rotate(180deg)";
+                    }else{
+                        obj.style.transform="rotate(0deg)";
+                    }
+
                     var L = 10
                     var T = 10 //层移动范围的左边界(L)和上边界(T)坐标   
                     var R = document.body.clientWidth - obj.offsetWidth - 10 //层移动的右边界   
